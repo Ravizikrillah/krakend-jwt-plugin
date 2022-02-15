@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "plugin": {
+    "pattern": ".so",
+    "folder": "/etc/krakend/plugin/"
+  },
+  "extra_config": {
+    "github_com/devopsfaith/krakend-cors": {
+      "allow_origins": [
+        "*"
+      ],
+      "expose_headers": [
+        "Content-Length",
+        "Content-Type"
+      ],
+      "allow_headers": [
+        "Accept-Language",
+        "Authorization",
+        "X-CSRF-TOKEN",
+        "Access-Control-Allow-Origin"
+      ],
+      "max_age": "12h",
+      "allow_methods": [
+        "GET",
+        "HEAD",
+        "POST",
+        "PUT",
+        "DELETE",
+        "OPTIONS"
+      ],
+      "allow_credentials": false
+    }
+  },
+  "timeout": "30000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "name": "your-project-name",
+  "endpoints": [
+    {
+      "endpoint": "/your/endpoint",
+      "method": "POST",
+      "output_encoding": "no-op",
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "RS256",
+          "typ": "JWT",
+          "jwk_fingerprints": [
+            "YOUR-JWT-FINGER-PRINTS"
+          ],
+          "propagate-claims": [
+            [
+              "Authorization"
+            ]
+          ]
+        }
+      },
+      "querystring_params": [
+        "offer_id"
+      ],
+      "headers_to_pass": [
+        "Authorization"
+      ],
+      "backend": [
+        {
+          "url_pattern": "/your/endpoint",
+          "encoding": "no-op",
+          "method": "POST",
+          "host": [
+            "http://localhost:8080"
+          ],
+          "extra_config": {
+            "github.com/devopsfaith/krakend/transport/http/client/executor": {
+              "name": "middleware",
+              "roles": [
+                1,2,3,4,5
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
